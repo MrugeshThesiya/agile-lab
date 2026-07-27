@@ -1,0 +1,62 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: >
+  Deploy an EC2 Instance and display its Public and Private IP Addresses.
+
+Parameters:
+  InstanceType:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t3.micro
+    Description: EC2 Instance Type
+
+Mappings:
+  RegionMap:
+    ap-south-1:
+      AMI: ami-0f58b397bc5c1f2e8
+
+Resources:
+
+  InstanceSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+  MyEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap
+        - RegionMap
+        - !Ref AWS::Region
+        - AMI
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref InstanceSecurityGroup
+      Tags:
+        - Key: Name
+          Value: CloudFormation-Lab-VM
+
+Outputs:
+
+  InstanceId:
+    Description: EC2 Instance ID
+    Value: !Ref MyEC2Instance
+
+  PublicIPAddress:
+    Description: Public IPv4 Address
+    Value: !GetAtt MyEC2Instance.PublicIp
+
+  PrivateIPAddress:
+    Description: Private IPv4 Address
+    Value: !GetAtt MyEC2Instance.PrivateIp
+
+  AvailabilityZone:
+    Description: Availability Zone
+    Value: !GetAtt MyEC2Instance.AvailabilityZone

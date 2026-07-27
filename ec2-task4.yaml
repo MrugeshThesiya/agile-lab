@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: Task 4 - Deploy EC2 and automatically install Nginx
+
+Parameters:
+  InstanceType:
+    Type: String
+    Default: t2.micro
+
+Mappings:
+  RegionMap:
+    ap-south-1:
+      AMI: ami-0f58b397bc5c1f2e8
+
+Resources:
+
+  WebSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow HTTP and SSH
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+
+  WebServer:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: !FindInMap [RegionMap, !Ref AWS::Region, AMI]
+      InstanceType: !Ref InstanceType
+      SecurityGroupIds:
+        - !Ref WebSecurityGroup
+
+      UserData:
+        Fn::Base64: |
+          #!/bin/bash
+          dnf update -y
+          dnf install nginx -y
+          systemctl enable nginx
+          systemctl start nginx
+
+      Tags:
+        - Key: Name
+          Value: NginxServer
+
+Outputs:
+
+  PublicIP:
+    Description: Public IP Address
+    Value: !GetAtt WebServer.PublicIp
+
+  Website:
+    Description: Nginx URL
+    Value: !Sub "http://${WebServer.PublicIp}"
+
+  InstanceId:
+    Value: !Ref WebServer
