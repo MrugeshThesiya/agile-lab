@@ -18,6 +18,8 @@ jobs:
 
       - name: Download dependencies
         run: go mod download
+        working-directory: prac-5
 
       - name: Run tests
         run: go test ./...
+        working-directory: prac-5
