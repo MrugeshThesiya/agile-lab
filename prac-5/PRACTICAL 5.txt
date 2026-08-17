@@ -1,0 +1,674 @@
+PRACTICAL 5: GITHUB ACTIONS WORKFLOWS
+Course: Agile Methodology & DevOps
+Practical Duration: 2 Hours
+Level: Beginner
+Technology: Go + GitHub + GitHub Actions
+
+1. Aim
+To create a simple Go application, upload it to GitHub, and configure a GitHub Actions workflow to automatically test the application whenever code is pushed to the repository.
+
+2. Learning Objectives
+After completing this practical, you will be able to:
+* Understand the basic structure of a Go project.
+* Create and run a simple Go application.
+* Create automated tests using Go.
+* Understand Git and GitHub.
+* Create and manage a GitHub repository.
+* Understand GitHub Actions workflows.
+* Create a YAML workflow file.
+* Configure workflow triggers, jobs, and steps.
+* Run Go tests automatically using GitHub Actions.
+* Identify successful and failed workflow executions.
+
+3. Software and Tools Required
+RequirementPurposeGoCreate and run the applicationVS CodeCreate and edit project filesGitTrack and upload project changesGitHub AccountStore the project onlineGitHub ActionsAutomate testingWeb BrowserAccess GitHub
+4. Basic Concepts
+4.1 What is Go?
+Go, also called Golang, is a programming language developed by Google.
+It is widely used for:
+* Backend applications
+* Web servers
+* APIs
+* Cloud applications
+* DevOps tools
+In this practical, Go is used as the application language. The main objective is to learn how GitHub Actions can automatically test a Go application.
+
+4.2 What is Git?
+Git is a version control system used to track changes in source code.
+Common Git commands used in this practical are:
+git init
+git add
+git commit
+git push
+
+4.3 What is GitHub?
+GitHub is an online platform where Git repositories can be stored and managed.
+The relationship is:
+Git
+?
+Version Control
+
+GitHub
+?
+Online Repository
+
+4.4 What is GitHub Actions?
+GitHub Actions is an automation service provided by GitHub.
+It can automatically:
+* Build applications
+* Run tests
+* Check code
+* Deploy applications
+In this practical:
+Code Push
+    ?
+GitHub Actions
+    ?
+Setup Go
+    ?
+Run Tests
+    ?
+PASS / FAIL
+
+5. What is a GitHub Actions Workflow?
+A workflow is an automated process that tells GitHub what tasks to perform and when to perform them.
+For example:
+Whenever new code is pushed to GitHub, automatically run the tests.
+A workflow is written using a YAML file.
+
+6. What is YAML?
+YAML is a human-readable configuration format.
+GitHub Actions uses YAML files to define workflows.
+YAML files usually have the extension:
+.yml
+or:
+.yaml
+In this practical, our workflow file will be:
+go-test.yml
+
+7. Important GitHub Actions Terms
+TermMeaningWorkflowComplete automated processTriggerEvent that starts the workflowJobGroup of tasks performed togetherStepIndividual task within a jobRunnerMachine on which the workflow executesActionReusable component used by a workflowYAMLConfiguration language used to define the workflowWorkflow hierarchy
+Workflow
+   ¦
+   +-- Job
+        ¦
+        +-- Step 1
+        +-- Step 2
+        +-- Step 3
+        +-- Step 4
+
+8. Project Overview
+In this practical, you will create a simple mathematical application.
+The application will contain an Add() function:
+Add(5, 3)
+     ?
+     8
+You will then create a test to verify that the function works correctly.
+Finally, GitHub Actions will execute this test automatically.
+
+9. Project Structure
+At the end of the practical, your project should have the following structure:
+github-actions-workflow/
+¦
++-- go.mod
++-- main.go
++-- math.go
++-- math_test.go
+¦
++-- .github/
+    +-- workflows/
+        +-- go-test.yml
+Purpose of each file
+File/FolderPurposego.modDefines the Go module/projectmain.goContains the main programmath.goContains the Add() functionmath_test.goContains automated tests.github/GitHub-specific configuration.github/workflows/Stores GitHub Actions workflowsgo-test.ymlDefines the GitHub Actions workflow
+10. Practical Procedure
+TASK 1: Verify Go Installation
+Open Command Prompt, PowerShell, or the VS Code Terminal.
+Run:
+go version
+Expected output:
+go version go1.20.x ...
+The exact version may be different.
+Checkpoint
+* Go is installed.
+* go version displays the installed version.
+
+TASK 2: Create the Project Folder
+Create a folder on your computer named:
+github-actions-workflow
+For example:
+Documents/
++-- github-actions-workflow/
+Open this folder in VS Code.
+
+TASK 3: Create main.go
+Inside the project folder, create:
+main.go
+Add the following code:
+package main
+
+import "fmt"
+
+func main() {
+    fmt.Println("GitHub Actions Practical")
+}
+Save the file.
+
+TASK 4: Run the Go Application
+Open the terminal in VS Code.
+Make sure you are inside the project directory.
+Run:
+go run main.go
+Expected Output
+GitHub Actions Practical
+Checkpoint
+* main.go created.
+* Program runs successfully.
+* Expected output is displayed.
+
+TASK 5: Create math.go
+Create a new file:
+math.go
+Add:
+package main
+
+func Add(a int, b int) int {
+    return a + b
+}
+This function accepts two integers and returns their sum.
+For example:
+Add(5, 3)
+   ?
+   8
+
+TASK 6: Create math_test.go
+Create:
+math_test.go
+Add:
+package main
+
+import "testing"
+
+func TestAdd(t *testing.T) {
+
+    result := Add(5, 3)
+
+    expected := 8
+
+    if result != expected {
+        t.Errorf("Expected %d but got %d", expected, result)
+    }
+}
+Why is this file required?
+This file contains an automated test for the Add() function.
+The test checks:
+Actual Result = 8
+Expected Result = 8
+If both are equal, the test passes.
+
+TASK 7: Create the Go Module
+In the VS Code terminal, run:
+go mod init github.com/yourusername/github-actions-workflow
+Replace yourusername with your GitHub username.
+For example:
+go mod init github.com/student123/github-actions-workflow
+This command creates:
+go.mod
+Your project should now look like:
+github-actions-workflow/
+¦
++-- go.mod
++-- main.go
++-- math.go
++-- math_test.go
+
+TASK 8: Test the Application Locally
+Run:
+go test ./...
+Expected Output
+You should see output similar to:
+ok      github.com/student123/github-actions-workflow
+The package name may be different depending on your module name.
+Meaning
+ok
+means the test passed successfully.
+Checkpoint
+* go test ./... executes successfully.
+* Test result is ok.
+
+TASK 9: Create a GitHub Repository
+1. Open GitHub in your browser.
+2. Sign in to your GitHub account.
+3. Create a new repository.
+4. Give the repository the name:
+github-actions-workflow
+5. Create the repository.
+Do not delete your local project.
+You will connect your local project to this repository.
+
+TASK 10: Initialize Git
+Return to the VS Code terminal.
+Make sure you are inside:
+github-actions-workflow
+Run:
+git init
+This initializes Git for the project.
+
+TASK 11: Add Project Files
+Run:
+git add .
+The . means all files in the current project are added to Git's staging area.
+
+TASK 12: Commit the Project
+Run:
+git commit -m "Initial Go project"
+A commit represents a saved version of your project.
+
+TASK 13: Connect the Local Project to GitHub
+Copy the repository URL from GitHub.
+Run:
+git remote add origin YOUR_REPOSITORY_URL
+For example:
+git remote add origin https://github.com/student123/github-actions-workflow.git
+
+TASK 14: Push the Project to GitHub
+Run:
+git branch -M main
+Then:
+git push -u origin main
+After the push is complete, refresh your GitHub repository.
+You should see:
+github-actions-workflow/
+¦
++-- go.mod
++-- main.go
++-- math.go
++-- math_test.go
+Checkpoint
+* GitHub repository created.
+* Local project connected to GitHub.
+* Files successfully pushed.
+* Files visible in GitHub.
+
+TASK 15: Create the GitHub Actions Workflow Folder
+Return to VS Code.
+Inside your project, create:
+.github
+Inside .github, create:
+workflows
+Your structure should now be:
+github-actions-workflow/
+¦
++-- go.mod
++-- main.go
++-- math.go
++-- math_test.go
+¦
++-- .github/
+    +-- workflows/
+
+TASK 16: Create the Workflow File
+Inside:
+.github/workflows/
+create:
+go-test.yml
+Your complete path is:
+.github/workflows/go-test.yml
+
+TASK 17: Write the GitHub Actions Workflow
+Open:
+go-test.yml
+Add:
+name: Go CI
+
+on:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.20'
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Run tests
+        run: go test ./...
+Save the file.
+
+18. Understand the Workflow
+18.1 Workflow Name
+name: Go CI
+This gives the workflow the name:
+Go CI
+
+18.2 Trigger
+on:
+  push:
+This means:
+Run the workflow whenever code is pushed to the repository.
+
+18.3 Job
+jobs:
+  test:
+This creates a job called:
+test
+The job contains the tasks required to test our application.
+
+18.4 Runner
+runs-on: ubuntu-latest
+This tells GitHub to run the job on a GitHub-hosted Ubuntu environment.
+The runner is the computer/environment that executes the workflow.
+
+19. Understand the Steps
+Step 1 - Checkout Code
+- name: Checkout code
+  uses: actions/checkout@v4
+Purpose
+Gets the project code from the GitHub repository and makes it available to the runner.
+
+Step 2 - Set Up Go
+- name: Set up Go
+  uses: actions/setup-go@v5
+  with:
+    go-version: '1.20'
+Purpose
+Sets up the Go environment required to execute the Go application and tests.
+
+Step 3 - Download Dependencies
+- name: Download dependencies
+  run: go mod download
+Purpose
+Downloads the dependencies specified by the Go module.
+
+Step 4 - Run Tests
+- name: Run tests
+  run: go test ./...
+Purpose
+Executes the Go test cases automatically.
+
+20. Difference Between uses and run
+This is an important concept.
+uses
+uses: actions/checkout@v4
+Means:
+Use an existing GitHub Action.
+run
+run: go test ./...
+Means:
+Execute a command on the runner.
+Therefore:
+uses ? Use an existing action
+
+run ? Execute a command
+
+TASK 18: Push the Workflow to GitHub
+The workflow currently exists only on your computer.
+You must push it to GitHub.
+Run:
+git add .
+Then:
+git commit -m "Add GitHub Actions workflow"
+Then:
+git push
+
+TASK 19: Open GitHub Actions
+Open your GitHub repository.
+Click:
+Actions
+You should see:
+Go CI
+Click the workflow.
+Then click the job:
+test
+
+20. Expected Successful Output
+You should see something similar to:
+? Checkout code
+? Set up Go
+? Download dependencies
+? Run tests
+The overall workflow should show:
+? Go CI
+This means the workflow completed successfully.
+
+21. Understand What Happened
+The complete process was:
+You write Go code
+       ?
+Test Go code locally
+       ?
+Push code to GitHub
+       ?
+GitHub detects the push
+       ?
+GitHub Actions starts
+       ?
+Ubuntu runner is provided
+       ?
+Repository code is checked out
+       ?
+Go is configured
+       ?
+Dependencies are downloaded
+       ?
+Go tests are executed
+       ?
+       ?
+    Test Passed
+
+TASK 20: Test a Workflow Failure
+Now intentionally create a test failure.
+Open:
+math_test.go
+Change:
+expected := 8
+to:
+expected := 10
+Save the file.
+
+TASK 21: Push the Incorrect Test
+Run:
+git add .
+Then:
+git commit -m "Test workflow failure"
+Then:
+git push
+GitHub Actions will automatically start a new workflow.
+
+22. Observe the Failed Workflow
+Go to:
+GitHub ? Actions ? Go CI
+You should see:
+? Run tests
+The workflow will fail because:
+Actual result   = 8
+Expected result = 10
+You may see an error similar to:
+FAIL
+Error: Process completed with exit code 1.
+
+TASK 22: Fix the Test
+Change:
+expected := 10
+back to:
+expected := 8
+Save the file.
+Push again:
+git add .
+git commit -m "Fix test"
+git push
+Return to:
+GitHub ? Actions
+The new workflow should pass.
+
+23. Final Expected Workflow
+The successful workflow should look approximately like:
+Go CI
+ ¦
+ +-- test
+      ¦
+      +-- ? Checkout code
+      +-- ? Set up Go
+      +-- ? Download dependencies
+      +-- ? Run tests
+
+          ? Workflow successful
+
+24. Local Execution vs GitHub Actions
+It is important to understand that Go can be executed in two places.
+On your computer
+You manually execute:
+go run main.go
+and:
+go test ./...
+Purpose:
+Test the application locally.
+On GitHub Actions
+GitHub automatically executes:
+go test ./...
+according to the YAML workflow.
+Purpose:
+Automatically test the application after a code change is pushed.
+Therefore:
+YOUR COMPUTER
+     ¦
+     ¦ git push
+     ?
+GITHUB
+     ¦
+     ?
+GITHUB ACTIONS
+     ¦
+     ?
+RUNNER
+     ¦
+     ?
+GO TEST
+     ¦
+     ?
+PASS / FAIL
+
+25. Final Project Structure
+Your project must finally look like:
+github-actions-workflow/
+¦
++-- go.mod
++-- main.go
++-- math.go
++-- math_test.go
+¦
++-- .github/
+    +-- workflows/
+        +-- go-test.yml
+
+26. File Purpose Summary
+FilePurposego.modDefines the Go modulemain.goMain Go applicationmath.goContains the Add() functionmath_test.goTests the Add() functiongo-test.ymlDefines the GitHub Actions workflow
+27. Important Commands
+CommandPurposego versionCheck Go installationgo run main.goRun Go programgo mod init ...Create Go modulego test ./...Run Go testsgit initInitialize Gitgit add .Add filesgit commit -m "message"Save changes in Gitgit pushUpload changes to GitHub
+28. Student Verification Checklist
+Before submitting the practical, verify all the following:
+Go Application
+* Go is installed.
+* Project folder is created.
+* main.go is created.
+* math.go is created.
+* math_test.go is created.
+* go.mod is created.
+* go run main.go executes successfully.
+* go test ./... passes.
+GitHub
+* GitHub repository is created.
+* Project is pushed to GitHub.
+* All project files are visible on GitHub.
+GitHub Actions
+* .github/workflows folder is created.
+* go-test.yml is created.
+* Workflow is pushed to GitHub.
+* Go CI appears under Actions.
+* Workflow executes successfully.
+* All four steps show green check marks.
+* Workflow failure is demonstrated.
+* Error is corrected.
+* Final workflow passes successfully.
+
+29. Expected Output / Evidence
+Take screenshots of the following:
+Screenshot 1 - Local Go Program
+Show:
+GitHub Actions Practical
+Screenshot 2 - Local Test
+Show:
+ok
+after executing:
+go test ./...
+Screenshot 3 - GitHub Repository
+Show the project files:
+go.mod
+main.go
+math.go
+math_test.go
+.github/
+Screenshot 4 - Successful GitHub Actions
+Show:
+? Checkout code
+? Set up Go
+? Download dependencies
+? Run tests
+Screenshot 5 - Failed Workflow
+Show the intentionally failed:
+? Run tests
+Screenshot 6 - Final Successful Workflow
+Show the corrected workflow with:
+? Go CI
+
+30. Result
+The Go application was successfully created, tested locally, uploaded to GitHub, and integrated with a GitHub Actions workflow. The workflow automatically executed the Go tests after code was pushed to the repository, and both successful and failed workflow executions were verified.
+
+
+ One-Minute Concept Summary
+Remember these five points:
+1. GO
+   ?
+   Creates our application
+
+2. GITHUB
+   ?
+   Stores our project
+
+3. YAML
+   ?
+   Defines the GitHub Actions workflow
+
+4. GITHUB ACTIONS
+   ?
+   Executes the workflow automatically
+
+5. GO TEST
+   ?
+   Checks whether our application works
+Final Concept
+        CODE
+          ?
+       GitHub
+          ?
+     GitHub Actions
+          ?
+       Workflow
+        (YAML)
+          ?
+        Job
+          ?
+       Steps
+          ?
+     Go Test
+          ?
+     ? PASS / ? FAIL
+
