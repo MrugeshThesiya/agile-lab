@@ -31,3 +31,6 @@ Thumbs.db
 
 # AWS
 ~/.aws/credentials
+
+# Python
+.venv/
