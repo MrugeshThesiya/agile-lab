@@ -1,0 +1,23 @@
+name: Go CI
+
+on:
+  push:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.27'
+
+      - name: Download Dependencies
+        run: go mod download 
+
+      - name: Run Go tests
+        run: go test ./...
